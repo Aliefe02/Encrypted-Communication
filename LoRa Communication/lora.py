@@ -4,7 +4,7 @@ class LoRa:
     def __init__(self, baudrate, port):
         self.baudrate = baudrate
         self.port = port
-        self.ser = serial.Serial(self.baudrate, self.port)
+        self.ser = serial.Serial(self.port, self.baudrate)
 
     def send_message(self, message):
         message_to_send = message + "send\n"
