@@ -1,28 +1,7 @@
-from encryptor import Encryptor, MSG_SIZE
+from encryptor import Encryptor
+from lora import LoRa
 import traceback
-import serial
 import json
-
-arduino_port = 'COM3'
-baud_rate = 9600
-
-ser = serial.Serial(arduino_port, baud_rate)
-
-
-def send_message(message):
-    message_to_send = message + " send"
-    ser.write((message_to_send + '\n').encode())
-    print(f"Sent: {message_to_send}")
-
-def receive_message():
-    ser.write("recv\n".encode())
-    print("Receiving message...")
-
-    while True:
-        if ser.in_waiting > 0:
-            response = ser.readline().decode().strip()
-            print(f"Received: {response}")
-            break
 
 CONFIG_PATH = 'config.json'
 
@@ -31,7 +10,7 @@ def load_json_file(file_path):
         data = json.load(file)
     return data
 
-def communicate(enc):
+def communicate(lora, enc):
     while True:
         try:
             msg = input('+ ')
@@ -43,19 +22,19 @@ def communicate(enc):
 
             encrypted_message = enc.generate_encrypted_message(msg, msg_type)
             for chunk in encrypted_message:
-                send_message(chunk)
+                lora.send_message(chunk)
             
             if msg == '!exit':
                 break
             
-            data = receive_message()
+            data = lora.receive_message()
             if not data:
                 continue
 
             message, type, completed = enc.generate_decrypted_message(data)
             
             while not completed:
-                new_data = receive_message()
+                new_data = lora.receive_message()
                 if not data:
                     continue
                 data = data + new_data
@@ -85,7 +64,9 @@ if __name__== "__main__":
     config = load_json_file(CONFIG_PATH)
     
     enc = Encryptor(config['SECRET_KEY'])
-    
-    communicate(enc)
+    lora = LoRa(config['BAUDRATE'], config['PORT'])
+    communicate(lora, enc)
 
+    lora.close()
     print("[CLOSING CLIENT...]")
+    
