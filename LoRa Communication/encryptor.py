@@ -1,6 +1,5 @@
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives import padding
-import datetime
 import hashlib
 import random
 import base64
@@ -31,13 +30,13 @@ class Encryptor:
         encrypted_data_base64 = base64.b64encode(encrypted_data).decode('utf-8')
         iv_base64 = base64.b64encode(iv).decode()
 
-        message_json = {"body":encrypted_data_base64, "iv":iv_base64, "created_at":datetime.datetime.now().isoformat(), "type":type}
+        message_json = {"body":encrypted_data_base64, "iv":iv_base64, "type":type}
 
         if type == 'file':
             message_json["filename"] = os.path.basename(data) 
 
         message = json.dumps(message_json) + "[__END__]"
-        
+
         return message
     
 
