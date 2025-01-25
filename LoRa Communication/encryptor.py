@@ -37,15 +37,12 @@ class Encryptor:
             message_json["filename"] = os.path.basename(data) 
 
         message = json.dumps(message_json) + "[__END__]"
-
-        message_chunks = [message[i:i + MSG_SIZE] for i in range(0, len(message), MSG_SIZE)]
         
-        return message_chunks
+        return message
     
 
     def generate_decrypted_message(self, encrypted_message):
 
-        encrypted_message = encrypted_message.decode('utf-8')
         completed = encrypted_message[-9:] == '[__END__]'
         
         if not completed:
