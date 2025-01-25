@@ -14,21 +14,19 @@ def communicate(lora, enc):
     print("[COMMUNICATION HAS STARTED]")
     while True:
         try:
-            while True:
-                msg = input('+ ')
-                if msg[:5] == '!file':
-                    msg_type = 'file'
-                    msg = msg[5:].strip()
-                else:
-                    msg_type = 'string'
-
-                encrypted_message = enc.generate_encrypted_message(msg, msg_type)
-                if not lora.send_message(encrypted_message):
-                    print("[ERROR WHEN SENDING MESSAGE]")
-                    continue
-                
-                if msg == '!exit':
-                    break
+            msg = input('+ ')
+            if msg[:5] == '!file':
+                msg_type = 'file'
+                msg = msg[5:].strip()
+            else:
+                msg_type = 'string'
+            encrypted_message = enc.generate_encrypted_message(msg, msg_type)
+            if not lora.send_message(encrypted_message):
+                print("[ERROR WHEN SENDING MESSAGE]")
+                continue
+            
+            if msg == '!exit':
+                break
             
             data = lora.receive_message()            
             
