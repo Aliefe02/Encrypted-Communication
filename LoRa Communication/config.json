@@ -1,5 +1,5 @@
 {
     "SECRET_KEY":"secret_key",
-    "HOST":"127.0.0.1",
-    "PORT":12345
+    "PORT":"/dev/ttyUSB0",
+    "BAUDRATE":9600
 }
