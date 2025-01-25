@@ -13,6 +13,7 @@ def load_json_file(file_path):
 
 
 def communicate(lora, enc):
+    print("[COMMUNICATION HAS STARTED]")
     while True:
         try:
             data = lora.receive_message()
@@ -42,8 +43,10 @@ def communicate(lora, enc):
                 msg_type = 'string'
 
             encrypted_message = enc.generate_encrypted_message(msg, msg_type)
-            for chunk in encrypted_message:
-                lora.send_message(chunk)
+            
+            if not lora.send_message(encrypted_message):
+                    print("[ERROR WHEN SENDING MESSAGE]")
+                    continue
             
             if msg == '!exit':
                 break
